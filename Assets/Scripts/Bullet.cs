@@ -7,6 +7,13 @@ public class Bullet : MonoBehaviour
 {
     private Rigidbody2D _rb;
     private float _speed = 1000f;
+    private bool isRight;
+    private Vector2 TargetDirection => isRight ? Vector2.right : Vector2.left;
+
+    public void SetDirection(bool isRight)
+    {
+        this.isRight = isRight;
+    }
 
     private void Awake()
     {
@@ -25,6 +32,7 @@ public class Bullet : MonoBehaviour
             case "Platform":
             case "Player":
             case "Death":
+            case "Enemy":
                 break;
             default:
                 Destroy(col.gameObject);
