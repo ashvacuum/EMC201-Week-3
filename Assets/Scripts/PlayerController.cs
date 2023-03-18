@@ -18,10 +18,11 @@ public class PlayerController : MonoBehaviour
     private Animator _anim;
 
     private bool _isOnGround;
-    
-    
-    
-    
+
+    private bool _hasFireballs;
+
+    private bool _hasDoubleJump;
+
     private void Awake()
     {
         _rb = GetComponentInChildren<Rigidbody2D>();
@@ -31,13 +32,29 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if (Input.GetButton("Jump") && _isOnGround)
+        var speed = Speed;
+        if (Input.GetKey(KeyCode.LeftShift))
         {
+            speed = speed * 3;
+        }
+        var Xinput = Input.GetAxis("Horizontal");
+        var yinput = Input.GetAxis("Vertical");
+        
+        transform.Translate( Speed * Time.deltaTime * Xinput,Speed * Time.deltaTime * yinput, transform.position.z);
+        
+
+        if (Input.GetButton("Jump") && _isOnGround || _hasDoubleJump)
+        {
+            if(_isOnGround)
+            {
+                _hasDoubleJump = true;
+            }
             _isOnGround = false;
             Debug.Log("Test Jump");
             _rb.AddForce(Vector2.up * jumpForce);
             StartCoroutine(JumpTimer());
+            if (_hasDoubleJump && !_isOnGround)
+                _hasDoubleJump = false;
         }
 
 
@@ -46,7 +63,7 @@ public class PlayerController : MonoBehaviour
         _anim.SetBool("isWalking", walkInput != 0);
         _rb.AddForce(Vector2.right * Speed * walkInput);
 
-        if (Input.GetButton("Fire1"))
+        if (Input.GetButton("Fire1") && _hasFireballs)
         {
             Instantiate(bulletPrefab, new Vector3(this.transform.position.x + 1,this.transform.position.y, this.transform.position.z), Quaternion.identity);
         }
@@ -63,11 +80,15 @@ public class PlayerController : MonoBehaviour
         {
             case "Platform":
                 _isOnGround = true;
+                _hasDoubleJump = false;
                 break;
             case "Death":
                 Debug.Log("You have died");
-                SceneManager.LoadScene(1, LoadSceneMode.Single);
+                SceneManager.LoadScene(1, LoadSceneMode.Single);                
                 StopCoroutine(JumpTimer());
+                break;
+            case "Fireball":
+                _hasFireballs = true;
                 break;
             default:
                 break;
@@ -105,3 +126,4 @@ public class PlayerController : MonoBehaviour
         
     }
 }
+
