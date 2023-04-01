@@ -2443,10 +2443,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82428885d0015244db26a9313fb69f0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 20
-  jumpForce: 150
+  PlayerDefaults: {fileID: 11400000, guid: b80c0c762ee76cf48b5b51beed7de768, type: 2}
   bulletPrefab: {fileID: 6908454802466668038, guid: ef492ea7fc5104046b496e7a01683e7c, type: 3}
-  _lazerBeamRange: 2
 --- !u!61 &1914989518
 BoxCollider2D:
   m_ObjectHideFlags: 0

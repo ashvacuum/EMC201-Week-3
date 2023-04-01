@@ -7,12 +7,14 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    public float Speed;
-    public float jumpForce = 10f;
+    private PlayerDefaults PlayerDefaults;
+
+    private float _speed;
+    private float _jumpForce = 10f;
 
     public GameObject bulletPrefab;
 
-    public float _lazerBeamRange = 2f;
+    private float _lazerBeamRange = 2f;
     
     private Rigidbody2D _rb;
     private Animator _anim;
@@ -27,12 +29,19 @@ public class PlayerController : MonoBehaviour
     {
         _rb = GetComponentInChildren<Rigidbody2D>();
         _anim = GetComponent<Animator>();
+
+        if(PlayerDefaults != null)
+        {
+            _speed = PlayerDefaults.speed;
+            _jumpForce = PlayerDefaults.jumpForce;
+            _lazerBeamRange = PlayerDefaults.lazerBeamRange;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        var speed = Speed;
+        var speed = _speed;
         if (Input.GetKey(KeyCode.LeftShift))
         {
             speed = speed * 3;
@@ -40,7 +49,7 @@ public class PlayerController : MonoBehaviour
         var Xinput = Input.GetAxis("Horizontal");
         var yinput = Input.GetAxis("Vertical");
         
-        transform.Translate( Speed * Time.deltaTime * Xinput,Speed * Time.deltaTime * yinput, transform.position.z);
+        transform.Translate( _speed * Time.deltaTime * Xinput,_speed * Time.deltaTime * yinput, transform.position.z);
         
 
         if (Input.GetButton("Jump") && _isOnGround || _hasDoubleJump)
@@ -51,7 +60,7 @@ public class PlayerController : MonoBehaviour
             }
             _isOnGround = false;
             Debug.Log("Test Jump");
-            _rb.AddForce(Vector2.up * jumpForce);
+            _rb.AddForce(Vector2.up * _jumpForce);
             StartCoroutine(JumpTimer());
             if (_hasDoubleJump && !_isOnGround)
                 _hasDoubleJump = false;
@@ -61,7 +70,7 @@ public class PlayerController : MonoBehaviour
         var walkInput = Input.GetAxis("Horizontal");
         
         _anim.SetBool("isWalking", walkInput != 0);
-        _rb.AddForce(Vector2.right * Speed * walkInput);
+        _rb.AddForce(Vector2.right * _speed * walkInput);
 
         if (Input.GetButton("Fire1") && _hasFireballs)
         {
